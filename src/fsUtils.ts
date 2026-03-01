@@ -5,6 +5,14 @@ import path from 'node:path';
 
 import prettyBytes from 'pretty-bytes';
 
+export function ensureWithinDirectory(basePath: string, targetPath: string): void {
+    const resolvedBase = path.resolve(basePath);
+    const resolvedTarget = path.resolve(targetPath);
+    if (resolvedTarget !== resolvedBase && !resolvedTarget.startsWith(resolvedBase + path.sep)) {
+        throw new Error(`Malicious path detected in archive: ${targetPath}`);
+    }
+}
+
 export async function pathExists(path: string) {
     return fs
         .access(path, FS_CONSTANTS.F_OK)
