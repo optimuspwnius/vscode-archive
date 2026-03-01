@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import jszip from 'jszip';
 
-import { pathExists } from '../fsUtils';
+import { ensureWithinDirectory, pathExists } from '../fsUtils';
 
 /**
  * Copy from https://github.com/ddramone/unzip-crx/blob/feat/crx-v3-support/src/index.js
@@ -72,6 +72,7 @@ export async function decompressCrx(archivePath: string, dest: string) {
                 zipFileKeys.map(async (filename) => {
                     const isFile = !zip.files[filename].dir;
                     const fullPath = path.join(dest!, filename);
+                    ensureWithinDirectory(dest!, fullPath);
                     const directory = isFile ? path.dirname(fullPath) : fullPath;
                     if (!(await pathExists(directory))) {
                         await fs.mkdir(directory, { recursive: true });
